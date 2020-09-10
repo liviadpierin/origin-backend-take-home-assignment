@@ -1,0 +1,28 @@
+version: "3"
+services:
+  base: &base
+    hostname: base
+    ports: []
+    build:
+        context: .
+        dockerfile: Dockerfile
+    command: uwsgi --ini /app/wsgi.ini
+  
+  app: &app
+    <<: *base
+    hostname: app
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+      
+  test: &test
+    <<: *base
+    command: pytest tests
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet     
+      
+networks:
+  webnet:
